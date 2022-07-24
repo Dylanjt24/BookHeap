@@ -7,10 +7,12 @@
         </div>
         <div class="mb-3">
             <label asp-for="Name"></label>
+            <span asp-validation-for="Name" class="text-danger"></span>
             <input asp-for="Name" class="form-control" />
         </div>
         <div class="mb-3">
             <label asp-for="DisplayOrder"></label>
+            <span asp-validation-for="DisplayOrder" class="text-danger"></span>
             <input asp-for="DisplayOrder" class="form-control" />
         </div>
         <button type="submit" class="btn btn-primary" style="width:150px">Create</button>

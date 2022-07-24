@@ -28,6 +28,9 @@ namespace BookHeapWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Category newCategory)
         {
+            if (!ModelState.IsValid)
+                return View("New");
+
             _db.Categories.Add(newCategory);
             _db.SaveChanges();
             return RedirectToAction("Index");
