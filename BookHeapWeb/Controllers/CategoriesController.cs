@@ -18,5 +18,19 @@ namespace BookHeapWeb.Controllers
             IEnumerable<Category> allCategories = _db.Categories;
             return View(allCategories);
         }
+
+        public IActionResult New()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Category newCategory)
+        {
+            _db.Categories.Add(newCategory);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
     }
 }
