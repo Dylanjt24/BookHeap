@@ -5,7 +5,7 @@ namespace BookHeapWeb.Models
     public class Category
     {
         [Key]
-        public int Id { get; set; }
+        public int CategoryId { get; set; }
 
         [Required(ErrorMessage = "is required")]
         public string Name { get; set; }
