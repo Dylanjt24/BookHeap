@@ -12,19 +12,19 @@ namespace BookHeapWeb.Controllers
         {
             _db = db;
         }
-
+        [HttpGet("/categories")]
         public IActionResult Index()
         {
             IEnumerable<Category> allCategories = _db.Categories;
             return View(allCategories);
         }
-
+        [HttpGet("/categories/new")]
         public IActionResult New()
         {
             return View();
         }
 
-        [HttpPost]
+        [HttpPost("/categories/create")]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Category newCategory)
         {
@@ -34,6 +34,15 @@ namespace BookHeapWeb.Controllers
             _db.Categories.Add(newCategory);
             _db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        [HttpGet("/categories/{categoryId:int}/edit")]
+        public IActionResult Edit(int categoryId)
+        {
+            Category? dbCategory = _db.Categories.Find(categoryId);
+            if (dbCategory == null)
+                RedirectToAction("Index");
+            return View(dbCategory);
         }
     }
 }
