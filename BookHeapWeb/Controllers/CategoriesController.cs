@@ -1,6 +1,7 @@
 ﻿using BookHeapWeb.Data;
 using BookHeapWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace BookHeapWeb.Controllers
 {
@@ -43,6 +44,24 @@ namespace BookHeapWeb.Controllers
             if (dbCategory == null)
                 RedirectToAction("Index");
             return View(dbCategory);
+        }
+
+        [HttpPost("/categories/{categoryId:int}/update")]
+        [ValidateAntiForgeryToken]
+        public IActionResult Update(Category updatedCategory, int categoryId)
+        {
+            if (!ModelState.IsValid)
+                return View("Edit", updatedCategory);
+
+            Category? dbCategory = _db.Categories.Find(categoryId);
+            if (dbCategory == null)
+                return RedirectToAction("Index");
+
+            dbCategory.Name = updatedCategory.Name;
+            dbCategory.DisplayOrder = updatedCategory.DisplayOrder;
+            dbCategory.UpdatedAt = DateTime.Now;
+            _db.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }
