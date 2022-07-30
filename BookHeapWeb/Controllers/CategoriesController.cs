@@ -63,5 +63,18 @@ namespace BookHeapWeb.Controllers
             _db.SaveChanges();
             return RedirectToAction("Index");
         }
+
+        [HttpPost("/categories/{categoryId:int}/delete")]
+        [AutoValidateAntiforgeryToken]
+        public IActionResult Delete(int categoryId)
+        {
+            Category? dbCategory = _db.Categories.Find(categoryId);
+            if (dbCategory != null)
+            {
+                _db.Categories.Remove(dbCategory);
+                _db.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
     }
 }
