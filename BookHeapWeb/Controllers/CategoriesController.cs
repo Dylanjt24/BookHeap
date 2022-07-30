@@ -46,20 +46,34 @@ namespace BookHeapWeb.Controllers
             return View(dbCategory);
         }
 
-        [HttpPost("/categories/{categoryId:int}/update")]
+        //[HttpPost("/categories/{categoryId:int}/update")]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Update(Category updatedCategory, int categoryId)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return View("Edit", updatedCategory);
+
+        //    Category? dbCategory = _db.Categories.Find(categoryId);
+        //    if (dbCategory == null)
+        //        return RedirectToAction("Index");
+
+        //    dbCategory.Name = updatedCategory.Name;
+        //    dbCategory.DisplayOrder = updatedCategory.DisplayOrder;
+        //    dbCategory.UpdatedAt = DateTime.Now;
+        //    _db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
+
+        [HttpPost("/categories/{categoryId:int}/edit")]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(Category updatedCategory, int categoryId)
+        public IActionResult Update(Category updatedCategory)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || updatedCategory.CategoryId == 0)
                 return View("Edit", updatedCategory);
 
-            Category? dbCategory = _db.Categories.Find(categoryId);
-            if (dbCategory == null)
-                return RedirectToAction("Index");
 
-            dbCategory.Name = updatedCategory.Name;
-            dbCategory.DisplayOrder = updatedCategory.DisplayOrder;
-            dbCategory.UpdatedAt = DateTime.Now;
+            updatedCategory.UpdatedAt = DateTime.Now;
+            _db.Categories.Update(updatedCategory);
             _db.SaveChanges();
             return RedirectToAction("Index");
         }
