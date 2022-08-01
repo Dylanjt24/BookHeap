@@ -34,6 +34,7 @@ namespace BookHeapWeb.Controllers
 
             _db.Categories.Add(newCategory);
             _db.SaveChanges();
+            TempData["Success"] = "Category created successfully";
             return RedirectToAction("Index");
         }
 
@@ -75,6 +76,7 @@ namespace BookHeapWeb.Controllers
             updatedCategory.UpdatedAt = DateTime.Now;
             _db.Categories.Update(updatedCategory);
             _db.SaveChanges();
+            TempData["Success"] = "Category updated successfully";
             return RedirectToAction("Index");
         }
 
@@ -87,6 +89,7 @@ namespace BookHeapWeb.Controllers
             {
                 _db.Categories.Remove(dbCategory);
                 _db.SaveChanges();
+                TempData["Success"] = "Category deleted successfully";
             }
             return RedirectToAction("Index");
         }
