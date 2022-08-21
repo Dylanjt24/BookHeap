@@ -1,4 +1,4 @@
-using BookHeapWeb.Data;
+using BookHeap.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

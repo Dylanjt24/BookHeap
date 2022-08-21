@@ -1,7 +1,7 @@
-﻿using BookHeapWeb.Models;
+﻿using BookHeap.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookHeapWeb.Data
+namespace BookHeap.DataAccess
 {
     public class ApplicationDbContext : DbContext
     {
