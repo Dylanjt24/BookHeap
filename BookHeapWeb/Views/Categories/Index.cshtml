@@ -9,7 +9,7 @@
             <h2 class="text-primary">Category List</h2>
         </div>
         <div class="col-6 text-end">
-            <a asp-controller="Categories" asp-action="New" class="btn btn-primary"><i class="bi bi-plus-circle"></i> &nbsp; Create New Category</a>
+            <a asp-controller="Categories" asp-action="New" class="btn btn-dark rounded-pill"><i class="bi bi-plus-circle"></i> &nbsp; Create New Category</a>
         </div>
     </div>
 
@@ -39,8 +39,8 @@
                     </td>
                     <td>
                         <div class="w-75 btn-group" role="group">
-                            <a asp-controller="Categories" asp-action="Edit" asp-route-categoryId="@category.CategoryId" class="btn btn-secondary mx-2"><i class="bi bi-pencil-square"></i> Edit</a>
-                            <a asp-controller="Categories" asp-action="Delete" asp-route-categoryId="@category.CategoryId" class="btn btn-danger mx-2"><i class="bi bi-trash-fill"></i> Delete</a>
+                            <a asp-controller="Categories" asp-action="Edit" asp-route-categoryId="@category.CategoryId" class="btn btn-light mx-2 border rounded-pill"><i class="bi bi-pencil-square"></i> Edit</a>
+                            <a asp-controller="Categories" asp-action="Delete" asp-route-categoryId="@category.CategoryId" class="btn btn-danger mx-2 border rounded-pill"><i class="bi bi-trash-fill"></i> Delete</a>
                         </div>
                     </td>
                 </tr>
