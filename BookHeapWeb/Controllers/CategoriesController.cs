@@ -80,7 +80,7 @@ namespace BookHeapWeb.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpGet]
+        [HttpGet("/categories/{categoryId:int}/delete")]
         public IActionResult Delete(int categoryId)
         {
             Category? dbCategory = _db.Categories.Find(categoryId);
@@ -89,7 +89,7 @@ namespace BookHeapWeb.Controllers
             return View(dbCategory);
         }
 
-        [HttpPost,ActionName("Delete")]
+        [HttpPost("/categories/{categoryId:int}/delete"), ActionName("Delete")]
         [AutoValidateAntiforgeryToken]
         public IActionResult DeletePOST(int categoryId)
         {
