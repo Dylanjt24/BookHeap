@@ -1,5 +1,4 @@
 ﻿using BookHeap.DataAccess.Repository.IRepository;
-using BookHeap.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,18 +7,19 @@ using System.Threading.Tasks;
 
 namespace BookHeap.DataAccess.Repository
 {
-    public class CategoryRepository : Repository<Category>, ICategoryRepository
+    public class UnitOfWork : IUnitOfWork
     {
         private ApplicationDbContext _db;
-        public CategoryRepository(ApplicationDbContext db) : base(db)
+        public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
+            Category = new CategoryRepository(_db);
         }
-
-        public void Update(Category category)
+        public ICategoryRepository Category { get; private set; }
+        public void Save()
         {
-            category.UpdatedAt = DateTime.Now;
-            _db.Categories.Update(category);
+            _db.SaveChanges();
         }
     }
+}
 }
