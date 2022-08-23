@@ -13,12 +13,19 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.7" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.8" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BookHeap.DataAccess\BookHeap.DataAccess.csproj" />
     <ProjectReference Include="..\BookHeap.Models\BookHeap.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Controllers\" />
+    <Folder Include="Areas\Admin\Views\" />
+    <Folder Include="Areas\Customer\Controllers\" />
+    <Folder Include="Areas\Customer\Views\" />
   </ItemGroup>
 
 </Project>
