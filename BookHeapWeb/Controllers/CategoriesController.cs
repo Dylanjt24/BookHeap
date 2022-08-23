@@ -8,16 +8,16 @@ namespace BookHeapWeb.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly ICategoryRepository _db;
+        private readonly IUnitOfWork _db;
 
-        public CategoriesController(ICategoryRepository db)
+        public CategoriesController(IUnitOfWork db)
         {
             _db = db;
         }
         [HttpGet("/categories")]
         public IActionResult Index()
         {
-            IEnumerable<Category> allCategories = _db.GetAll();
+            IEnumerable<Category> allCategories = _db.Categories.GetAll();
             return View(allCategories);
         }
         [HttpGet("/categories/new")]
@@ -33,7 +33,7 @@ namespace BookHeapWeb.Controllers
             if (!ModelState.IsValid)
                 return View("New");
 
-            _db.Add(newCategory);
+            _db.Categories.Add(newCategory);
             _db.Save();
             TempData["Success"] = "Category created successfully";
             return RedirectToAction("Index");
@@ -42,7 +42,7 @@ namespace BookHeapWeb.Controllers
         [HttpGet("/categories/{categoryId:int}/edit")]
         public IActionResult Edit(int categoryId)
         {
-            Category? dbCategory = _db.GetFirstOrDefault(c => c.CategoryId == categoryId);
+            Category? dbCategory = _db.Categories.GetFirstOrDefault(c => c.CategoryId == categoryId);
             if (dbCategory == null)
                 return RedirectToAction("Index");
             return View(dbCategory);
@@ -75,7 +75,7 @@ namespace BookHeapWeb.Controllers
 
 
             updatedCategory.UpdatedAt = DateTime.Now;
-            _db.Update(updatedCategory);
+            _db.Categories.Update(updatedCategory);
             _db.Save();
             TempData["Success"] = "Category updated successfully";
             return RedirectToAction("Index");
@@ -84,7 +84,7 @@ namespace BookHeapWeb.Controllers
         [HttpGet("/categories/{categoryId:int}/delete")]
         public IActionResult Delete(int categoryId)
         {
-            Category? dbCategory = _db.GetFirstOrDefault(c => c.CategoryId == categoryId);
+            Category? dbCategory = _db.Categories.GetFirstOrDefault(c => c.CategoryId == categoryId);
             if (dbCategory == null)
                 RedirectToAction("Index");
             return View(dbCategory);
@@ -94,10 +94,10 @@ namespace BookHeapWeb.Controllers
         [AutoValidateAntiforgeryToken]
         public IActionResult DeletePOST(int categoryId)
         {
-            Category? dbCategory = _db.GetFirstOrDefault(c => c.CategoryId == categoryId);
+            Category? dbCategory = _db.Categories.GetFirstOrDefault(c => c.CategoryId == categoryId);
             if (dbCategory != null)
             {
-                _db.Remove(dbCategory);
+                _db.Categories.Remove(dbCategory);
                 _db.Save();
                 TempData["Success"] = "Category deleted successfully";
             }

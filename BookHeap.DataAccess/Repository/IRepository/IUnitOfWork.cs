@@ -8,7 +8,7 @@ namespace BookHeap.DataAccess.Repository.IRepository
 {
     public interface IUnitOfWork
     {
-        ICategoryRepository Category { get; }
+        ICategoryRepository Categories { get; }
 
         void Save();
     }
