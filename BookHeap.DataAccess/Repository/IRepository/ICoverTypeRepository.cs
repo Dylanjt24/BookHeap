@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BookHeap.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace BookHeap.DataAccess.Repository.IRepository
 {
-    public interface IUnitOfWork
+    public interface ICoverTypeRepository : IRepository<CoverType>
     {
-        ICategoryRepository Categories { get; }
-        ICoverTypeRepository CoverTypes { get; }
-
-        void Save();
+        void Update(CoverType coverType);
     }
 }
