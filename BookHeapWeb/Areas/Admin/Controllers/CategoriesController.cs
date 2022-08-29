@@ -74,8 +74,6 @@ public class CategoriesController : Controller
         if (!ModelState.IsValid || updatedCategory.CategoryId == 0)
             return View("Edit", updatedCategory);
 
-
-        updatedCategory.UpdatedAt = DateTime.Now;
         _db.Categories.Update(updatedCategory);
         _db.Save();
         TempData["Success"] = "Category updated successfully";
