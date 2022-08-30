@@ -15,9 +15,11 @@ namespace BookHeap.DataAccess.Repository
             _db = db;
             Categories = new CategoryRepository(_db);
             CoverTypes = new CoverTypeRepository(_db);
+            Products = new ProductRepository(_db);
         }
         public ICategoryRepository Categories { get; private set; }
         public ICoverTypeRepository CoverTypes { get; private set; }
+        public IProductRepository Products { get; private set; }
         public void Save()
         {
             _db.SaveChanges();
