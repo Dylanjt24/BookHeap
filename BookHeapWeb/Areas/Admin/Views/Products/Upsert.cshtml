@@ -1,0 +1,71 @@
+﻿@model Product
+
+<form asp-controller="Products" asp-action="Upsert" method="POST">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Edit Product</h2>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Title"></label>
+            <span asp-validation-for="Title" class="text-danger"></span>
+            <input asp-for="Title" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Description"></label>
+            <span asp-validation-for="Description" class="text-danger"></span>
+            <textarea asp-for="Description" rows="3" class="form-control"></textarea>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ISBN"></label>
+            <span asp-validation-for="ISBN" class="text-danger"></span>
+            <input asp-for="ISBN" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Author"></label>
+            <span asp-validation-for="Author" class="text-danger"></span>
+            <input asp-for="Author" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="ListPrice"></label>
+            <span asp-validation-for="ListPrice" class="text-danger"></span>
+            <input asp-for="ListPrice" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Price"></label>
+            <span asp-validation-for="Price" class="text-danger"></span>
+            <input asp-for="Price" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Price50"></label>
+            <span asp-validation-for="Price50" class="text-danger"></span>
+            <input asp-for="Price50" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Price100"></label>
+            <span asp-validation-for="Price100" class="text-danger"></span>
+            <input asp-for="Price100" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="CategoryId"></label>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+            <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
+                <option disabled selected>--Select Category--</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label asp-for="CoverTypeId"></label>
+            <span asp-validation-for="CoverTypeId" class="text-danger"></span>
+            <select asp-for="CoverTypeId" asp-items="ViewBag.CoverTypes" class="form-select">
+                <option disabled selected>--Select Cover Type--</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-dark rounded-pill" style="width:150px">Update</button>
+        <a asp-controller="CoverTypes" asp-action="Index" class="btn btn-light border rounded-pill" style="width:150px;">Back</a>
+    </div>
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

@@ -2,6 +2,7 @@
 using BookHeap.DataAccess.Repository.IRepository;
 using BookHeap.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
 
 namespace BookHeapWeb.Areas.Admin.Controllers;
@@ -21,37 +22,40 @@ public class ProductsController : Controller
         IEnumerable<CoverType> allCoverTypes = _db.CoverTypes.GetAll();
         return View(allCoverTypes);
     }
+
     [HttpGet]
-    public IActionResult New()
+    public IActionResult Upsert(int productId)
     {
+        Product product = new();
+        IEnumerable<SelectListItem> CategoryList = _db.Categories.GetAll().Select(
+            c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.CategoryId.ToString()
+            });
+        IEnumerable<SelectListItem> CoverTypeList = _db.CoverTypes.GetAll().Select(
+            c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.Id.ToString()
+            });
+        if (productId == null || productId == 0)
+        {
+            // create product
+            ViewBag.Categories = CategoryList;
+            ViewBag.CoverTypes = CoverTypeList;
+            return View(product);
+        }
+        else
+        {
+            // update product
+        }
         return View();
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(CoverType newCoverType)
-    {
-        if (!ModelState.IsValid)
-            return View("New");
-
-        _db.CoverTypes.Add(newCoverType);
-        _db.Save();
-        TempData["Success"] = "Cover Type created successfully";
-        return RedirectToAction("Index");
-    }
-
-    [HttpGet]
-    public IActionResult Edit(int coverTypeId)
-    {
-        CoverType? dbCoverType = _db.CoverTypes.GetFirstOrDefault(c => c.Id == coverTypeId);
-        if (dbCoverType == null)
-            return RedirectToAction("Index");
-        return View(dbCoverType);
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult Update(CoverType updatedCoverType)
+    public IActionResult Upsert(CoverType updatedCoverType)
     {
         if (!ModelState.IsValid || updatedCoverType.Id == 0)
             return View("Edit", updatedCoverType);
