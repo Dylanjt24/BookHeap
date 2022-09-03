@@ -57,14 +57,14 @@ public class ProductsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Upsert(CoverType updatedCoverType)
+    public IActionResult Upsert(ProductViewModel updatedProduct, IFormFile file)
     {
-        if (!ModelState.IsValid || updatedCoverType.Id == 0)
-            return View("Edit", updatedCoverType);
+        if (!ModelState.IsValid || updatedProduct.Product.Id == 0)
+            return View("Edit", updatedProduct);
 
-        _db.CoverTypes.Update(updatedCoverType);
+        _db.Products.Update(updatedProduct.Product);
         _db.Save();
-        TempData["Success"] = "Cover Type updated successfully";
+        TempData["Success"] = "Product updated successfully";
         return RedirectToAction("Index");
     }
 

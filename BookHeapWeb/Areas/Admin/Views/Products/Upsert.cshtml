@@ -1,6 +1,6 @@
 ﻿@model BookHeap.Models.ViewModels.ProductViewModel
 
-<form asp-controller="Products" asp-action="Upsert" method="POST">
+<form asp-controller="Products" asp-action="Upsert" method="POST" enctype="multipart/form-data">
     <div class="border p-3 mt-4">
         <div class="row pb-2">
             <h2 class="text-primary">Edit Product</h2>
@@ -46,6 +46,10 @@
             <input asp-for="Product.Price100" class="form-control" />
         </div>
         <div class="mb-3">
+            <label asp-for="Product.ImageUrl"></label>
+            <input type="file" class="form-control" />
+        </div>
+        <div class="mb-3">
             <label asp-for="Product.CategoryId"></label>
             <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
             <select asp-for="Product.CategoryId" asp-items="@Model.CategoryList" class="form-select">
@@ -60,7 +64,7 @@
             </select>
         </div>
         <button type="submit" class="btn btn-dark rounded-pill" style="width:150px">Update</button>
-        <a asp-controller="CoverTypes" asp-action="Index" class="btn btn-light border rounded-pill" style="width:150px;">Back</a>
+        <a asp-controller="Products" asp-action="Index" class="btn btn-light border rounded-pill" style="width:150px;">Back</a>
     </div>
 </form>
 
