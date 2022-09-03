@@ -1,6 +1,7 @@
 ﻿using BookHeap.DataAccess;
 using BookHeap.DataAccess.Repository.IRepository;
 using BookHeap.Models;
+using BookHeap.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
@@ -26,25 +27,26 @@ public class ProductsController : Controller
     [HttpGet]
     public IActionResult Upsert(int productId)
     {
-        Product product = new();
-        IEnumerable<SelectListItem> CategoryList = _db.Categories.GetAll().Select(
-            c => new SelectListItem
+        ProductViewModel productViewModel = new()
+        {
+            Product = new(),
+            CategoryList = _db.Categories.GetAll().Select(c => new SelectListItem
             {
                 Text = c.Name,
                 Value = c.CategoryId.ToString()
-            });
-        IEnumerable<SelectListItem> CoverTypeList = _db.CoverTypes.GetAll().Select(
-            c => new SelectListItem
+            }),
+            CoverTypeList = _db.CoverTypes.GetAll().Select(ct => new SelectListItem
             {
-                Text = c.Name,
-                Value = c.Id.ToString()
-            });
+                Text = ct.Name,
+                Value = ct.Id.ToString()
+            })
+        };
+
         if (productId == null || productId == 0)
         {
-            // create product
-            ViewBag.Categories = CategoryList;
-            ViewBag.CoverTypes = CoverTypeList;
-            return View(product);
+            //ViewBag.Categories = CategoryList;
+            //ViewBag.CoverTypes = CoverTypeList;
+            return View(productViewModel);
         }
         else
         {
