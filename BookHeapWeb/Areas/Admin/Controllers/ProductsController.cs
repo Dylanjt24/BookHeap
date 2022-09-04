@@ -12,11 +12,14 @@ namespace BookHeapWeb.Areas.Admin.Controllers;
 public class ProductsController : Controller
 {
     private readonly IUnitOfWork _db;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public ProductsController(IUnitOfWork db)
+    public ProductsController(IUnitOfWork db, IWebHostEnvironment webHostEnvironment)
     {
         _db = db;
+        _webHostEnvironment = webHostEnvironment;
     }
+
     [HttpGet]
     public IActionResult Index()
     {
@@ -57,14 +60,28 @@ public class ProductsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Upsert(ProductViewModel updatedProduct, IFormFile file)
+    public IActionResult Upsert(ProductViewModel productVM, IFormFile? file)
     {
-        if (!ModelState.IsValid || updatedProduct.Product.Id == 0)
-            return View("Edit", updatedProduct);
+        if (ModelState.IsValid)
+        {
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+            if (file != null)
+            {
+                string fileName = Guid.NewGuid().ToString();
+                var uploads = Path.Combine(wwwRootPath, @"images\products");
+                var extension = Path.GetExtension(file.FileName);
 
-        _db.Products.Update(updatedProduct.Product);
+                using (var fileStream = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+                productVM.Product.ImageUrl = @"\images\products\" + fileName + extension;
+            }
+        }
+
+        _db.Products.Add(productVM.Product);
         _db.Save();
-        TempData["Success"] = "Product updated successfully";
+        TempData["Success"] = "Product created successfully";
         return RedirectToAction("Index");
     }
 

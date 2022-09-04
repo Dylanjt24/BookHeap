@@ -21,4 +21,8 @@
     <ProjectReference Include="..\BookHeap.Models\BookHeap.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\products\" />
+  </ItemGroup>
+
 </Project>
