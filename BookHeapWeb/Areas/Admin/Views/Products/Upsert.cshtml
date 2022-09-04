@@ -3,7 +3,7 @@
 <form asp-controller="Products" asp-action="Upsert" method="POST" enctype="multipart/form-data">
     <div class="border p-3 mt-4 row">
         <div class="row pb-2">
-            <h2 class="text-primary">Edit Product</h2>
+            <h2 class="text-primary">@(Model.Product.Id !=0 ? "Update" : "Create") Product</h2>
         </div>
         <div class="mb-3">
             <label asp-for="Product.Title"></label>
@@ -47,7 +47,7 @@
         </div>
         <div class="mb-3">
             <label asp-for="Product.ImageUrl"></label>
-            <input type="file" class="form-control" />
+            <input type="file" id="uploadBox" class="form-control" />
         </div>
         <div class="mb-3 col-6">
             <label asp-for="Product.CategoryId"></label>
@@ -63,8 +63,14 @@
                 <option disabled selected>--Select Cover Type--</option>
             </select>
         </div>
-            <div class="col-12">
-            <button type="submit" class="btn btn-dark rounded-pill" style="width:150px">Update</button>
+        <div class="col-12">
+            @if(Model.Product.Id != 0)
+            {
+                <button type="submit" class="btn btn-dark rounded-pill" style="width:150px">Update</button>
+            } else
+            {
+                <button type="submit" onclick="return ValidateInput()" class="btn btn-dark rounded-pill" style="width:150px">Update</button>
+            }
             <a asp-controller="Products" asp-action="Index" class="btn btn-light border rounded-pill" style="width:150px;">Back</a>
         </div>
     </div>
@@ -72,6 +78,19 @@
 
 @section Scripts{
     @{
-        <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
     }
+    <script>
+        function ValidateInput(){
+            if (document.getElementById("uploadBox").value == "") {
+                Swal.fire(
+                    'Oops...',
+                    'Please upload an image!',
+                    'error'
+                );
+                return false;
+            }
+            return true;
+        }
+    </script>
 }
