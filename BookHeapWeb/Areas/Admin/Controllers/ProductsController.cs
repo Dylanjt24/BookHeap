@@ -23,8 +23,7 @@ public class ProductsController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        IEnumerable<CoverType> allCoverTypes = _db.CoverTypes.GetAll();
-        return View(allCoverTypes);
+        return View();
     }
 
     [HttpGet]
@@ -107,4 +106,13 @@ public class ProductsController : Controller
         }
         return RedirectToAction("Index");
     }
+
+    #region API CALLS
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        var productList = _db.Products.GetAll();
+        return Json(new { data = productList });
+    }
+    #endregion
 }
