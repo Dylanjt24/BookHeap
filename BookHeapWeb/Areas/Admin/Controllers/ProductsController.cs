@@ -111,7 +111,7 @@ public class ProductsController : Controller
     [HttpGet]
     public IActionResult GetAll()
     {
-        var productList = _db.Products.GetAll();
+        var productList = _db.Products.GetAll("Category,CoverType");
         return Json(new { data = productList });
     }
     #endregion
