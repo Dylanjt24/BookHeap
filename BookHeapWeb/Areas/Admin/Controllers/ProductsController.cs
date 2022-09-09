@@ -27,9 +27,9 @@ public class ProductsController : Controller
     }
 
     [HttpGet]
-    public IActionResult Upsert(int productId)
+    public IActionResult Upsert(int? productId)
     {
-        ProductViewModel productViewModel = new()
+        ProductViewModel productVM = new()
         {
             Product = new(),
             CategoryList = _db.Categories.GetAll().Select(c => new SelectListItem
@@ -44,17 +44,21 @@ public class ProductsController : Controller
             })
         };
 
-        if (productId == null || productId == 0)
-        {
-            //ViewBag.Categories = CategoryList;
-            //ViewBag.CoverTypes = CoverTypeList;
-            return View(productViewModel);
-        }
-        else
-        {
-            // update product
-        }
-        return View();
+        //if (productId == null || productId == 0)
+        //{
+        //    //ViewBag.Categories = CategoryList;
+        //    //ViewBag.CoverTypes = CoverTypeList;
+        //    return View(productVM);
+        //}
+        //else
+        //{
+        //    productVM.Product = _db.Products.GetFirstOrDefault(p => p.Id == productId);
+        //    // update product
+        //}
+        if (productId > 0 || productId != null)
+            productVM.Product = _db.Products.GetFirstOrDefault(p => p.Id == productId);
+
+        return View(productVM);
     }
 
     [HttpPost]
