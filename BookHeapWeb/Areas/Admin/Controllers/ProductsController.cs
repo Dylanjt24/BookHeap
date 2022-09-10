@@ -104,35 +104,32 @@ public class ProductsController : Controller
         return RedirectToAction("Index");
     }
 
-    [HttpGet]
-    public IActionResult Delete(int coverTypeId)
-    {
-        CoverType? dbCoverType = _db.CoverTypes.GetFirstOrDefault(c => c.Id == coverTypeId);
-        if (dbCoverType == null)
-            RedirectToAction("Index");
-        return View(dbCoverType);
-    }
-
-    [HttpPost, ActionName("Delete")]
-    [AutoValidateAntiforgeryToken]
-    public IActionResult DeletePOST(int coverTypeId)
-    {
-        CoverType? dbCoverType = _db.CoverTypes.GetFirstOrDefault(c => c.Id == coverTypeId);
-        if (dbCoverType != null)
-        {
-            _db.CoverTypes.Remove(dbCoverType);
-            _db.Save();
-            TempData["Success"] = "Cover Type deleted successfully";
-        }
-        return RedirectToAction("Index");
-    }
-
     #region API CALLS
     [HttpGet]
     public IActionResult GetAll()
     {
+        // Get all products and include Category and CoverType
         var productList = _db.Products.GetAll("Category,CoverType");
         return Json(new { data = productList });
+    }
+
+    [HttpDelete]
+    [AutoValidateAntiforgeryToken]
+    public IActionResult Delete(int productId)
+    {
+        Product? dbProduct = _db.Products.GetFirstOrDefault(p => p.Id == productId);
+
+        if (dbProduct == null)
+            return Json(new { success = false, message = "Error while deleting" });
+
+        // Remove product image if it exists
+        var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, dbProduct.ImageUrl.TrimStart('\\'));
+        if (System.IO.File.Exists(oldImagePath))
+            System.IO.File.Delete(oldImagePath);
+
+        _db.Products.Remove(dbProduct);
+        _db.Save();
+        return Json(new { success = true, message = "Product deleted successfully" });
     }
     #endregion
 }
