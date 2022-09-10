@@ -1,6 +1,8 @@
 ﻿@model BookHeap.Models.ViewModels.ProductViewModel
 
 <form asp-controller="Products" asp-action="Upsert" method="POST" enctype="multipart/form-data">
+    <input asp-for="Product.Id" hidden />
+    <input asp-for="Product.ImageUrl" hidden />
     <div class="border p-3 mt-4 row">
         <div class="row pb-2">
             <h2 class="text-primary">@(Model.Product.Id !=0 ? "Update" : "Create") Product</h2>
@@ -69,7 +71,7 @@
                 <button type="submit" class="btn btn-dark rounded-pill" style="width:150px">Update</button>
             } else
             {
-                <button type="submit" onclick="return ValidateInput()" class="btn btn-dark rounded-pill" style="width:150px">Update</button>
+                <button type="submit" onclick="return ValidateInput()" class="btn btn-dark rounded-pill" style="width:150px">Create</button>
             }
             <a asp-controller="Products" asp-action="Index" class="btn btn-light border rounded-pill" style="width:150px;">Back</a>
         </div>

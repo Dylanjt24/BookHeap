@@ -32,6 +32,7 @@ public class ProductsController : Controller
         ProductViewModel productVM = new()
         {
             Product = new(),
+            // Used to populate HTML select tag with existing categories/cover types as options
             CategoryList = _db.Categories.GetAll().Select(c => new SelectListItem
             {
                 Text = c.Name,
@@ -56,6 +57,7 @@ public class ProductsController : Controller
         //    // update product
         //}
         if (productId > 0 || productId != null)
+            // Populates the productVM.product with product info that has given Id
             productVM.Product = _db.Products.GetFirstOrDefault(p => p.Id == productId);
 
         return View(productVM);
@@ -74,15 +76,29 @@ public class ProductsController : Controller
                 var uploads = Path.Combine(wwwRootPath, @"images\products");
                 var extension = Path.GetExtension(file.FileName);
 
+                // Checks if ImageUrl already exists on the product and deletes it if so
+                if (productVM.Product.ImageUrl != null)
+                {
+                    var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.ImageUrl.TrimStart('\\'));
+                    if (System.IO.File.Exists(oldImagePath))
+                        System.IO.File.Delete(oldImagePath);
+                }
+
+                // Opens new FileStream with the image upload file path and copies the given image file to that stream
                 using (var fileStream = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
                 {
                     file.CopyTo(fileStream);
                 }
+                // Update Product ImageURL with created file path
                 productVM.Product.ImageUrl = @"\images\products\" + fileName + extension;
             }
         }
+        // Creates product if it's new, updates product if it already exists
+        if (productVM.Product.Id == 0)
+            _db.Products.Add(productVM.Product);
+        else
+            _db.Products.Update(productVM.Product);
 
-        _db.Products.Add(productVM.Product);
         _db.Save();
         TempData["Success"] = "Product created successfully";
         return RedirectToAction("Index");
