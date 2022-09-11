@@ -114,10 +114,9 @@ public class ProductsController : Controller
     }
 
     [HttpDelete]
-    [AutoValidateAntiforgeryToken]
     public IActionResult Delete(int productId)
     {
-        Product? dbProduct = _db.Products.GetFirstOrDefault(p => p.Id == productId);
+        Product dbProduct = _db.Products.GetFirstOrDefault(p => p.Id == productId);
 
         if (dbProduct == null)
             return Json(new { success = false, message = "Error while deleting" });
