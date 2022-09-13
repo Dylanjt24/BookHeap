@@ -18,7 +18,7 @@ namespace BookHeap.DataAccess.Repository
 
         public void Update(Product product)
         {
-            Product dbProduct = _db.Products.FirstOrDefault(p => p.Id == product.Id);
+            Product? dbProduct = _db.Products.FirstOrDefault(p => p.Id == product.Id);
             if (dbProduct != null)
             {
                 dbProduct.Title = product.Title;
@@ -29,6 +29,8 @@ namespace BookHeap.DataAccess.Repository
                 dbProduct.Price = product.Price;
                 dbProduct.Price50 = product.Price50;
                 dbProduct.Price100 = product.Price100;
+                dbProduct.CategoryId = product.CategoryId;
+                dbProduct.CoverTypeId = product.CoverTypeId;
                 dbProduct.UpdatedAt = DateTime.Now;
                 if (dbProduct.ImageUrl != null)
                     dbProduct.ImageUrl = product.ImageUrl;

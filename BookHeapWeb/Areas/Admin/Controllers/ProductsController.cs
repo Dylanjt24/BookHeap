@@ -95,12 +95,16 @@ public class ProductsController : Controller
         }
         // Creates product if it's new, updates product if it already exists
         if (productVM.Product.Id == 0)
+        {
             _db.Products.Add(productVM.Product);
+            TempData["Success"] = "Product created successfully";
+        }
         else
+        {
             _db.Products.Update(productVM.Product);
-
+            TempData["Success"] = "Product updated successfully";
+        }
         _db.Save();
-        TempData["Success"] = "Product created successfully";
         return RedirectToAction("Index");
     }
 
