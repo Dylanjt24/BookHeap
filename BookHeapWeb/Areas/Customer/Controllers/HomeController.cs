@@ -24,6 +24,19 @@ public class HomeController : Controller
         return View(allProducts);
     }
 
+    public IActionResult Details(int productId)
+    {
+        ShoppingCart shoppingCart = new()
+        {
+            Product = _unitOfWork.Products.GetFirstOrDefault(p => p.Id == productId, "Category,CoverType"),
+            Count = 1
+        };
+
+        if (shoppingCart.Product == null)
+            return RedirectToAction("Index");
+        return View(shoppingCart);
+    }
+
     public IActionResult Privacy()
     {
         return View();
