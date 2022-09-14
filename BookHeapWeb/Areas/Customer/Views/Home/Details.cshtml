@@ -4,7 +4,7 @@
 }
 
 <form method="post">
-    <div class="card container">
+    <div class="card container pt-4">
         <div class="card-header bg-primary text-light ms-0 row">
             <div class="col-12 col-md-6">
                 <h1 class="text-white-50">@Model.Product.Title</h1>
@@ -23,7 +23,7 @@
                             <h5 class="text-muted">ISBN: @Model.Product.ISBN</h5>
                         </div>
                         <div class="row ps-2">
-                            <h5 class="text-muted pb-2">List Price: <s>$@Model.Product.ListPrice</s></h5>
+                            <h5 class="text-muted pb-2">List Price: <s>@Model.Product.ListPrice.ToString("C")</s></h5>
                         </div>
                         <div class="row text-center ps-2">
                             <div class="p-1 col-2 bg-secondary border-bottom">
@@ -44,21 +44,21 @@
                                 <div>Price</div>
                             </div>
                             <div class="p-1 col-2 bg-secondary">
-                                <div>@Model.Product.Price</div>
+                                <div>@Model.Product.Price.ToString("C")</div>
                             </div>
                             <div class="p-1 col-2 bg-secondary">
-                                <div>@Model.Product.Price50</div>
+                                <div>@Model.Product.Price50.ToString("C")</div>
                             </div>
                             <div class="p-1 col-2 bg-secondary">
-                                <div>@Model.Product.Price100</div>
+                                <div>@Model.Product.Price100.ToString("C")</div>
                             </div>
                         </div>
                         <div class="row ps-2">
-                            <p class="text-secondary">@Model.Product.Description</p>
+                            <p class="text-secondary">@Html.Raw(Model.Product.Description)</p>
                         </div>
                         <div class="row ps-2">
                             <div class="col-2 text-primary"><h4>Count</h4></div>
-                            <div class="col-10"><input class="form-control" /></div>
+                            <div class="col-10"><input asp-for="Count" class="form-control" type="number" /></div>
                         </div>
                     </div>
                     <div class="col-12 col-lg-3 offset-lg-1 text-center">
@@ -70,7 +70,7 @@
         <div class="card-footer">
             <div class="row">
                 <div class="col-12 col-md-6 pb-1">
-                    <a class="btn btn-success form-control" style="height:50px;">Back to List</a>
+                    <a class="btn btn-success form-control" style="height:50px;" asp-action="Index">Back to Home</a>
                 </div>
                 <div class="col-12 col-md-6 pb-1">
                     <button type="submit" value="Add to Cart" class="btn btn-primary form-control" style="height:50px;">Add to Cart</button>
