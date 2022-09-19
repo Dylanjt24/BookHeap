@@ -32,7 +32,7 @@ namespace BookHeap.DataAccess.Repository
                 dbProduct.CategoryId = product.CategoryId;
                 dbProduct.CoverTypeId = product.CoverTypeId;
                 dbProduct.UpdatedAt = DateTime.Now;
-                if (dbProduct.ImageUrl != null)
+                if (product.ImageUrl != null)
                     dbProduct.ImageUrl = product.ImageUrl;
             }
         }
