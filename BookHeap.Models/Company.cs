@@ -10,7 +10,7 @@ namespace BookHeap.Models;
 public class Company
 {
     [Key]
-    public int Id { get; set; }
+    public int CompanyId { get; set; }
 
     [Required]
     public string Name { get; set; }
@@ -24,4 +24,7 @@ public class Company
     public string? PostalCode { get; set; }
 
     public string? PhoneNumber { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
 }
