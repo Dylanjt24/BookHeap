@@ -25,12 +25,12 @@ public class CompaniesController : Controller
     [HttpGet]
     public IActionResult Upsert(int? companyId)
     {
-        Company viewCompany = new();
+        Company company = new();
 
         if (companyId != null || companyId > 0)
-            viewCompany = _unitOfWork.Companies.GetFirstOrDefault(c => c.CompanyId == companyId);
+            company = _unitOfWork.Companies.GetFirstOrDefault(c => c.CompanyId == companyId);
 
-        return View(viewCompany);
+        return View(company);
     }
 
     [HttpPost]
