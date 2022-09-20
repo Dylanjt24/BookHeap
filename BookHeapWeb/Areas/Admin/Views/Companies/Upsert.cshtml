@@ -1,0 +1,62 @@
+﻿@model Company
+
+<form asp-controller="Companies" asp-action="Upsert" method="POST">
+    <input asp-for="CompanyId" hidden />
+
+    <div class="row">
+        <div class="col-12">
+            <div class="border p-3 mt-4 row">
+                <div class="col-12 pb-2">
+                    <h2 class="text-primary">@(Model.CompanyId != 0 ? "Update" : "Create") Company</h2>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Name"></label>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                    <input asp-for="Name" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label asp-for="StreetAddress"></label>
+                    <span asp-validation-for="StreetAddress" class="text-danger"></span>
+                    <input asp-for="StreetAddress" rows="3" class="form-control" />
+                </div>
+                <div class="mb-3 col-6">
+                    <label asp-for="City"></label>
+                    <span asp-validation-for="City" class="text-danger"></span>
+                    <input asp-for="City" class="form-control" />
+                </div>
+                <div class="mb-3 col-6">
+                    <label asp-for="State"></label>
+                    <span asp-validation-for="State" class="text-danger"></span>
+                    <input asp-for="State" class="form-control" />
+                </div>
+                <div class="mb-3 col-6">
+                    <label asp-for="PostalCode"></label>
+                    <span asp-validation-for="PostalCode" class="text-danger"></span>
+                    <input asp-for="PostalCode" class="form-control" />
+                </div>
+                <div class="mb-3 col-6">
+                    <label asp-for="PhoneNumber"></label>
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                </div>
+                <div class="col-12">
+                    @if (Model.CompanyId != 0)
+                    {
+                        <button type="submit" class="btn btn-dark rounded-pill" style="width:150px">Update</button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-dark rounded-pill" style="width:150px">Create</button>
+                    }
+                    <a asp-controller="Companies" asp-action="Index" class="btn btn-light border rounded-pill" style="width:150px;">Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
