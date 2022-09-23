@@ -10,6 +10,8 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using BookHeap.DataAccess.Repository;
+using BookHeap.DataAccess.Repository.IRepository;
 using BookHeap.Models;
 using BookHeap.Utilities;
 using Microsoft.AspNetCore.Authentication;
@@ -34,6 +36,7 @@ namespace BookHeapWeb.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUnitOfWork _unitOfWork;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -41,7 +44,8 @@ namespace BookHeapWeb.Areas.Identity.Pages.Account
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -50,6 +54,7 @@ namespace BookHeapWeb.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _roleManager = roleManager;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -113,14 +118,19 @@ namespace BookHeapWeb.Areas.Identity.Pages.Account
             public string? PostalCode { get; set; }
             public string? PhoneNumber { get; set; }
             public string? Role { get; set; }
+            public int? CompanyId { get; set; }
 
             [ValidateNever]
             public IEnumerable<SelectListItem> RoleList { get; set; }
+
+            [ValidateNever]
+            public IEnumerable<SelectListItem> CompanyList { get; set; }
         }
 
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+            // Create roles if they don't already exist
             if (!_roleManager.RoleExistsAsync(SD.Role_Admin).GetAwaiter().GetResult())
             {
                 _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).GetAwaiter().GetResult();
@@ -140,10 +150,16 @@ namespace BookHeapWeb.Areas.Identity.Pages.Account
             //};
             Input = new InputModel()
             {
+                // Create list items for role dropdown
                 RoleList = _roleManager.Roles.Select(r => new SelectListItem
                 {
                     Text = r.Name,
                     Value = r.Name
+                }),
+                CompanyList = _unitOfWork.Companies.GetAll().Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.CompanyId.ToString()
                 })
             };
         }
@@ -170,6 +186,7 @@ namespace BookHeapWeb.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
+                    // Add selected role to user
                     if (Input.Role == null)
                     {
                         await _userManager.AddToRoleAsync(user, SD.Role_User_Indi);
