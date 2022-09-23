@@ -190,6 +190,9 @@ namespace BookHeapWeb.Areas.Identity.Pages.Account
                 user.PostalCode = Input.PostalCode;
                 user.Name = Input.Name;
                 user.PhoneNumber = Input.PhoneNumber;
+                // Assign user's CompanyId if Company role is selected
+                if (Input.Role == SD.Role_User_Comp)
+                    user.CompanyId = Input.CompanyId;
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
