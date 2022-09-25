@@ -1,7 +1,9 @@
 ﻿using BookHeap.DataAccess.Repository.IRepository;
 using BookHeap.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace BookHeapWeb.Areas.Customer.Controllers;
 [Area("Customer")]
@@ -28,12 +30,28 @@ public class HomeController : Controller
         ShoppingCart shoppingCart = new()
         {
             Product = _unitOfWork.Products.GetFirstOrDefault(p => p.Id == productId, "Category,CoverType"),
-            Count = 1
+            Count = 1,
+            ProductId = productId
         };
 
         if (shoppingCart.Product == null)
             return RedirectToAction("Index");
         return View(shoppingCart);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize]
+    public IActionResult Details(ShoppingCart shoppingCart)
+    {
+        // Gets user's id from the NameIdentifier in the default Identity User object
+        var claimsIdentity = (ClaimsIdentity)User.Identity;
+        var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+        shoppingCart.ApplicationUserId = claim.Value;
+
+        _unitOfWork.ShoppingCarts.Add(shoppingCart);
+        _unitOfWork.Save();
+        return RedirectToAction("Index");
     }
 
     public IActionResult Privacy()
