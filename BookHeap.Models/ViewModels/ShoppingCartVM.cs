@@ -9,4 +9,5 @@ namespace BookHeap.Models.ViewModels;
 public class ShoppingCartVM
 {
     public IEnumerable<ShoppingCart> CartList { get; set; }
+    public double TotalPrice { get; set; }
 }
