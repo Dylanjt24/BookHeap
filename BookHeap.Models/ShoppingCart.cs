@@ -26,6 +26,9 @@ public class ShoppingCart
     [ValidateNever]
     public ApplicationUser ApplicationUser { get; set; }
 
+    [NotMapped]
+    public double Price { get; set; }
+
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
 }
