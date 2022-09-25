@@ -113,7 +113,7 @@ public class ProductsController : Controller
     public IActionResult GetAll()
     {
         // Get all products and include Category and CoverType
-        var productList = _db.Products.GetAll("Category,CoverType");
+        var productList = _db.Products.GetAll(null, "Category,CoverType");
         return Json(new { data = productList });
     }
 
