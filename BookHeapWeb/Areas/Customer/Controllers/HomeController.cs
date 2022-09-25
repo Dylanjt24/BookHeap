@@ -21,7 +21,7 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        IEnumerable<Product> allProducts = _unitOfWork.Products.GetAll("Category,CoverType");
+        IEnumerable<Product> allProducts = _unitOfWork.Products.GetAll(null, "Category,CoverType");
         return View(allProducts);
     }
 
