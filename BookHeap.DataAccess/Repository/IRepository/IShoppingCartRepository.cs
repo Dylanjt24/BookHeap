@@ -9,5 +9,7 @@ namespace BookHeap.DataAccess.Repository.IRepository
 {
     public interface IShoppingCartRepository : IRepository<ShoppingCart>
     {
+        public int IncrementCount(ShoppingCart cart, int count);
+        public int DecrementCount(ShoppingCart cart, int count);
     }
 }

@@ -15,5 +15,19 @@ namespace BookHeap.DataAccess.Repository
         {
             _db = db;
         }
+
+        public int IncrementCount(ShoppingCart shoppingCart, int count)
+        {
+            shoppingCart.Count += count;
+            shoppingCart.UpdatedAt = DateTime.Now;
+            return shoppingCart.Count;
+        }
+
+        public int DecrementCount(ShoppingCart shoppingCart, int count)
+        {
+            shoppingCart.Count -= count;
+            shoppingCart.UpdatedAt = DateTime.Now;
+            return shoppingCart.Count;
+        }
     }
 }
