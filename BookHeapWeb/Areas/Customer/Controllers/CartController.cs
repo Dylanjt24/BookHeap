@@ -26,11 +26,15 @@ public class CartController : Controller
         ShoppingCartVM = new ShoppingCartVM()
         {
             // Get all shopping carts with the logged in user id and include Products
-            CartList = _unitOfWork.ShoppingCarts.GetAll(c => c.ApplicationUserId == claim.Value, "Product")
+            CartList = _unitOfWork.ShoppingCarts.GetAll(c => c.ApplicationUserId == claim.Value, "Product"),
+            TotalPrice = 0
         };
-        // Set price for each shopping cart in CartList
+        // Set price for each shopping cart in CartList and update TotalPrice
         foreach(ShoppingCart cart in ShoppingCartVM.CartList)
+        {
             cart.Price = GetPriceFromQuantity(cart.Count, cart.Product.Price, cart.Product.Price50, cart.Product.Price100);
+            ShoppingCartVM.TotalPrice += cart.Price * cart.Count;
+        }
 
         return View(ShoppingCartVM);
     }
