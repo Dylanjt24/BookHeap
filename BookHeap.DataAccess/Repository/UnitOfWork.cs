@@ -18,6 +18,7 @@ namespace BookHeap.DataAccess.Repository
             Products = new ProductRepository(_db);
             Companies = new CompanyRepository(_db);
             ApplicationUsers = new ApplicationUserRepository(_db);
+            ShoppingCarts = new ShoppingCartRepository(_db);
         }
         public ICategoryRepository Categories { get; private set; }
         public ICoverTypeRepository CoverTypes { get; private set; }
