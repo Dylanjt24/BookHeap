@@ -31,16 +31,16 @@
                             </div>
                             <div class="col-6 col-sm-4 col-lg-6 pt-2">
                                 <div class="w-75 btn-group" role="group">
-                                    <a class="btn btn-primary rounded rounded-pill">
+                                    <a asp-action="IncreaseCount" asp-route-cartId="@cart.ShoppingCartId" class="btn btn-primary rounded rounded-pill">
                                         <i class="bi bi-plus-square"></i>
                                     </a> &nbsp;
-                                    <a class="btn btn-warning rounded rounded-pill">
+                                    <a asp-action="DecreaseCount" asp-route-cartId="@cart.ShoppingCartId" class="btn btn-warning rounded rounded-pill">
                                         <i class="bi bi-dash-square"></i>
                                     </a>
                                 </div>
                             </div>
                             <div class="col-2 col-sm-4 col-lg-2 text-right pt-2">
-                                <a class="btn btn-danger rounded rounded-pill">
+                                <a asp-action="Delete" asp-route-cartId="@cart.ShoppingCartId" class="btn btn-danger rounded rounded-pill">
                                     <i class="bi bi-trash-fill"></i>
                                 </a>
                             </div>
