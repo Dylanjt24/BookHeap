@@ -39,6 +39,35 @@ public class CartController : Controller
         return View(ShoppingCartVM);
     }
 
+    public IActionResult IncreaseCount(int cartId)
+    {
+        ShoppingCart dbCart = _unitOfWork.ShoppingCarts.GetFirstOrDefault(c => c.ShoppingCartId == cartId);
+        if (dbCart == null)
+            return RedirectToAction("Index", "Home");
+        _unitOfWork.ShoppingCarts.IncrementCount(dbCart, 1);
+        _unitOfWork.Save();
+        return RedirectToAction("Index");
+    }
+
+    public IActionResult DecreaseCount(int cartId)
+    {
+        ShoppingCart dbCart = _unitOfWork.ShoppingCarts.GetFirstOrDefault(c => c.ShoppingCartId == cartId);
+        if (dbCart.Count <= 1)
+            _unitOfWork.ShoppingCarts.Remove(dbCart);
+        else
+            _unitOfWork.ShoppingCarts.DecrementCount(dbCart, 1);
+        _unitOfWork.Save();
+        return RedirectToAction("Index");
+    }
+
+    public IActionResult Delete(int cartId)
+    {
+        ShoppingCart dbCart = _unitOfWork.ShoppingCarts.GetFirstOrDefault(c => c.ShoppingCartId == cartId);
+        _unitOfWork.ShoppingCarts.Remove(dbCart);
+        _unitOfWork.Save();
+        return RedirectToAction("Index");
+    }
+
     // Adjusts price based on quantity of products in the cart
     private double GetPriceFromQuantity(double quantity, double price, double price50, double price100)
     {
