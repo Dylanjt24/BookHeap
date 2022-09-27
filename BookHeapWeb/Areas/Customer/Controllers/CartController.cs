@@ -39,6 +39,7 @@ public class CartController : Controller
         return View(ShoppingCartVM);
     }
 
+    // Increase cart's count by 1
     public IActionResult IncreaseCount(int cartId)
     {
         ShoppingCart dbCart = _unitOfWork.ShoppingCarts.GetFirstOrDefault(c => c.ShoppingCartId == cartId);
@@ -52,6 +53,7 @@ public class CartController : Controller
     public IActionResult DecreaseCount(int cartId)
     {
         ShoppingCart dbCart = _unitOfWork.ShoppingCarts.GetFirstOrDefault(c => c.ShoppingCartId == cartId);
+        // Delete cart if Count will reach 0
         if (dbCart.Count <= 1)
             _unitOfWork.ShoppingCarts.Remove(dbCart);
         else
