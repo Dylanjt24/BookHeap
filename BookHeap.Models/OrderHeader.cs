@@ -45,4 +45,6 @@ public class OrderHeader
     // Properties for using Stripe
     public string? SessionId { get; set; }
     public string? PaymentIntentId { get; set; }
+
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
 }
