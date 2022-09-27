@@ -68,6 +68,11 @@ public class CartController : Controller
         return RedirectToAction("Index");
     }
 
+    public IActionResult Summary()
+    {
+        return View();
+    }
+
     // Adjusts price based on quantity of products in the cart
     private double GetPriceFromQuantity(double quantity, double price, double price50, double price100)
     {
