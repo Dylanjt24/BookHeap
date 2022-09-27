@@ -19,6 +19,8 @@ namespace BookHeap.DataAccess.Repository
             Companies = new CompanyRepository(_db);
             ApplicationUsers = new ApplicationUserRepository(_db);
             ShoppingCarts = new ShoppingCartRepository(_db);
+            OrderHeaders = new OrderHeaderRepository(_db);
+            OrderDetails = new OrderDetailRepository(_db);
         }
         public ICategoryRepository Categories { get; private set; }
         public ICoverTypeRepository CoverTypes { get; private set; }
@@ -26,6 +28,8 @@ namespace BookHeap.DataAccess.Repository
         public ICompanyRepository Companies { get; private set; }
         public IApplicationUserRepository ApplicationUsers { get; private set; }
         public IShoppingCartRepository ShoppingCarts { get; private set; }
+        public IOrderHeaderRepository OrderHeaders { get; private set; }
+        public IOrderDetailRepository OrderDetails { get; private set; }
         public void Save()
         {
             _db.SaveChanges();

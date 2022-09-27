@@ -14,6 +14,8 @@ namespace BookHeap.DataAccess.Repository.IRepository
         ICompanyRepository Companies { get; }
         IApplicationUserRepository ApplicationUsers { get; }
         IShoppingCartRepository ShoppingCarts { get; }
+        IOrderHeaderRepository OrderHeaders { get; }
+        IOrderDetailRepository OrderDetails { get; }
 
         void Save();
     }
