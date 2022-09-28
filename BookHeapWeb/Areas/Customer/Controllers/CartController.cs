@@ -27,13 +27,13 @@ public class CartController : Controller
         {
             // Get all shopping carts with the logged in user id and include Products
             CartList = _unitOfWork.ShoppingCarts.GetAll(c => c.ApplicationUserId == claim.Value, "Product"),
-            TotalPrice = 0
+            OrderHeader = new()
         };
         // Set price for each shopping cart in CartList and update TotalPrice
         foreach(ShoppingCart cart in ShoppingCartVM.CartList)
         {
             cart.Price = GetPriceFromQuantity(cart.Count, cart.Product.Price, cart.Product.Price50, cart.Product.Price100);
-            ShoppingCartVM.TotalPrice += cart.Price * cart.Count;
+            ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
         }
 
         return View(ShoppingCartVM);
@@ -72,7 +72,30 @@ public class CartController : Controller
 
     public IActionResult Summary()
     {
-        return View();
+        var claimsIdentity = (ClaimsIdentity)User.Identity;
+        var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+        ShoppingCartVM = new ShoppingCartVM()
+        {
+            CartList = _unitOfWork.ShoppingCarts.GetAll(c => c.ApplicationUserId == claim.Value, "Product"),
+            OrderHeader = new()
+        };
+        // Set ApplicationUser to logged in user and populate OrderHeader with user's info
+        ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUsers.GetFirstOrDefault(u => u.Id == claim.Value);
+
+        ShoppingCartVM.OrderHeader.Name = ShoppingCartVM.OrderHeader.ApplicationUser.Name;
+        ShoppingCartVM.OrderHeader.PhoneNumber = ShoppingCartVM.OrderHeader.ApplicationUser.PhoneNumber;
+        ShoppingCartVM.OrderHeader.StreetAddress = ShoppingCartVM.OrderHeader.ApplicationUser.StreetAddress;
+        ShoppingCartVM.OrderHeader.City = ShoppingCartVM.OrderHeader.ApplicationUser.City;
+        ShoppingCartVM.OrderHeader.State = ShoppingCartVM.OrderHeader.ApplicationUser.State;
+        ShoppingCartVM.OrderHeader.PostalCode = ShoppingCartVM.OrderHeader.ApplicationUser.PostalCode;
+
+        foreach (ShoppingCart cart in ShoppingCartVM.CartList)
+        {
+            cart.Price = GetPriceFromQuantity(cart.Count, cart.Product.Price, cart.Product.Price50, cart.Product.Price100);
+            ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
+        }
+        return View(ShoppingCartVM);
     }
 
     // Adjusts price based on quantity of products in the cart
