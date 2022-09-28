@@ -27,4 +27,6 @@ public class OrderDetail
 
     public int Count { get; set; }
     public double Price { get; set; }
+
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
 }
