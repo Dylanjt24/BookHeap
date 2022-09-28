@@ -16,6 +16,11 @@ namespace BookHeap.DataAccess.Repository
             _db = db;
         }
 
+        public void Update(OrderHeader orderHeader)
+        {
+            _db.OrderHeaders.Update(orderHeader);
+        }
+
         public void UpdateStatus(int id, string orderStatus, string? paymentStatus = null)
         {
             OrderHeader dbOrder = _db.OrderHeaders.FirstOrDefault(o => o.OrderHeaderId == id);
