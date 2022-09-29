@@ -172,6 +172,7 @@ public class CartController : Controller
 
         var service = new SessionService();
         Session session = service.Create(options);
+        // Update OrderHeader properties with info from Stripe session
         _unitOfWork.OrderHeaders.UpdateStripePaymentId(ShoppingCartVM.OrderHeader.OrderHeaderId, session.Id, session.PaymentIntentId);
         _unitOfWork.Save();
 
