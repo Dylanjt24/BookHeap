@@ -185,6 +185,25 @@ public class CartController : Controller
         //return RedirectToAction("Index", "Home");
     }
 
+    public IActionResult OrderConfirmation(int orderId)
+    {
+        OrderHeader orderHeader = _unitOfWork.OrderHeaders.GetFirstOrDefault(o => o.OrderHeaderId == orderId);
+        var service = new SessionService();
+        Session session = service.Get(orderHeader.SessionId);
+        // Check Stripe payment status is approved
+        if(session.PaymentStatus.ToLower() == "paid")
+        {
+            _unitOfWork.OrderHeaders.UpdateStatus(orderId, SD.StatusApproved, SD.PaymentStatusApproved);
+            _unitOfWork.Save();
+        }
+        // Clear shopping cart
+        List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCarts.GetAll(c => c.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+        _unitOfWork.ShoppingCarts.RemoveRange(shoppingCarts);
+        _unitOfWork.Save();
+
+        return View(orderId);
+    }
+
     // Adjusts price based on quantity of products in the cart
     private double GetPriceFromQuantity(double quantity, double price, double price50, double price100)
     {
