@@ -4,6 +4,7 @@ using BookHeap.Models.ViewModels;
 using BookHeap.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe.Checkout;
 using System.Security.Claims;
 
 namespace BookHeapWeb.Areas.Customer.Controllers;
@@ -138,10 +139,47 @@ public class CartController : Controller
             _unitOfWork.Save();
         }
 
-        _unitOfWork.ShoppingCarts.RemoveRange(ShoppingCartVM.CartList);
-        _unitOfWork.Save();
+        // Stripe settings
+        var domain = "https://localhost:44316/";
+        var options = new SessionCreateOptions
+        {
+            LineItems = new List<SessionLineItemOptions>(),
+            Mode = "payment",
+            SuccessUrl = domain + $"Customer/Cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.OrderHeaderId}",
+            CancelUrl = domain + "Customer/Cart/Index",
+        };
 
-        return RedirectToAction("Index", "Home");
+        // Create a LineItem for each product in CartList and add it to LineItems
+        foreach (ShoppingCart cart in ShoppingCartVM.CartList)
+        {
+            var sessionLineItem = new SessionLineItemOptions
+            {
+                PriceData = new SessionLineItemPriceDataOptions
+                {
+                    // Multiply by 100 to convert from dollars to cents
+                    UnitAmount = (long)(cart.Count * 100),
+                    Currency = "usd",
+                    ProductData = new SessionLineItemPriceDataProductDataOptions
+                    {
+                        Name = cart.Product.Title,
+                    },
+
+                },
+                Quantity = cart.Count,
+            };
+            options.LineItems.Add(sessionLineItem);
+        }
+
+        var service = new SessionService();
+        Session session = service.Create(options);
+
+        Response.Headers.Add("Location", session.Url);
+        return new StatusCodeResult(303);
+
+        //_unitOfWork.ShoppingCarts.RemoveRange(ShoppingCartVM.CartList);
+        //_unitOfWork.Save();
+
+        //return RedirectToAction("Index", "Home");
     }
 
     // Adjusts price based on quantity of products in the cart
