@@ -1,6 +1,7 @@
 ﻿using BookHeap.DataAccess.Repository.IRepository;
 using BookHeap.Models;
 using BookHeap.Models.ViewModels;
+using BookHeap.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -12,6 +13,7 @@ namespace BookHeapWeb.Areas.Customer.Controllers;
 public class CartController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
+    [BindProperty]
     public ShoppingCartVM ShoppingCartVM { get; set; }
     public CartController(IUnitOfWork unitOfWork)
     {
@@ -96,6 +98,50 @@ public class CartController : Controller
             ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
         }
         return View(ShoppingCartVM);
+    }
+
+    [HttpPost]
+    [ActionName("Summary")]
+    [ValidateAntiForgeryToken]
+    public IActionResult SummaryPOST()
+    {
+        var claimsIdentity = (ClaimsIdentity)User.Identity;
+        var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+        ShoppingCartVM.CartList = _unitOfWork.ShoppingCarts.GetAll(c => c.ApplicationUserId == claim.Value, "Product");
+
+        ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
+        ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
+        ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
+        ShoppingCartVM.OrderHeader.ApplicationUserId = claim.Value;
+
+        foreach (ShoppingCart cart in ShoppingCartVM.CartList)
+        {
+            cart.Price = GetPriceFromQuantity(cart.Count, cart.Product.Price, cart.Product.Price50, cart.Product.Price100);
+            ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
+        }
+
+        _unitOfWork.OrderHeaders.Add(ShoppingCartVM.OrderHeader);
+        _unitOfWork.Save();
+
+        // Create new OrderDetail for each cart in CartList
+        foreach (ShoppingCart cart in ShoppingCartVM.CartList)
+        {
+            OrderDetail orderDetail = new()
+            {
+                ProductId = cart.ProductId,
+                OrderId = ShoppingCartVM.OrderHeader.OrderHeaderId,
+                Count = cart.Count,
+                Price = cart.Price
+            };
+            _unitOfWork.OrderDetails.Add(orderDetail);
+            _unitOfWork.Save();
+        }
+
+        _unitOfWork.ShoppingCarts.RemoveRange(ShoppingCartVM.CartList);
+        _unitOfWork.Save();
+
+        return RedirectToAction("Index", "Home");
     }
 
     // Adjusts price based on quantity of products in the cart
