@@ -32,5 +32,16 @@ namespace BookHeap.DataAccess.Repository
                     dbOrder.PaymentStatus = paymentStatus;
             }
         }
+
+        public void UpdateStripePaymentId(int id, string sessionId, string paymentIntentId)
+        {
+            OrderHeader dbOrder = _db.OrderHeaders.FirstOrDefault(o => o.OrderHeaderId == id);
+            if (dbOrder != null)
+            {
+                dbOrder.SessionId = sessionId;
+                dbOrder.PaymentIntentId = paymentIntentId;
+                dbOrder.UpdatedAt = DateTime.Now;
+            }
+        }
     }
 }
