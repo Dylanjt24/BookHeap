@@ -145,7 +145,7 @@ public class CartController : Controller
         {
             LineItems = new List<SessionLineItemOptions>(),
             Mode = "payment",
-            SuccessUrl = domain + $"Customer/Cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.OrderHeaderId}",
+            SuccessUrl = domain + $"Customer/Cart/OrderConfirmation?orderId={ShoppingCartVM.OrderHeader.OrderHeaderId}",
             CancelUrl = domain + "Customer/Cart/Index",
         };
 
@@ -157,7 +157,7 @@ public class CartController : Controller
                 PriceData = new SessionLineItemPriceDataOptions
                 {
                     // Multiply by 100 to convert from dollars to cents
-                    UnitAmount = (long)(cart.Count * 100),
+                    UnitAmount = (long)(cart.Price * 100),
                     Currency = "usd",
                     ProductData = new SessionLineItemPriceDataProductDataOptions
                     {
