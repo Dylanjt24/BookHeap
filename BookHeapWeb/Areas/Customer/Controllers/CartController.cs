@@ -194,11 +194,6 @@ public class CartController : Controller
         }
 
         return RedirectToAction("OrderConfirmation", "Cart", new { orderId = ShoppingCartVM.OrderHeader.OrderHeaderId });
-
-        //_unitOfWork.ShoppingCarts.RemoveRange(ShoppingCartVM.CartList);
-        //_unitOfWork.Save();
-
-        //return RedirectToAction("Index", "Home");
     }
 
     public IActionResult OrderConfirmation(int orderId)
