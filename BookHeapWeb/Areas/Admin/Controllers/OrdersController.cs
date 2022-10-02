@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookHeapWeb.Areas.Admin.Controllers;
 
+[Area("Admin")]
 public class OrdersController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
