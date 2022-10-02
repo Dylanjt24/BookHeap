@@ -1,14 +1,15 @@
 ﻿@{
     var status = Context.Request.Query["status"];
-    var inprocess = "text-primary";
+    var processing = "text-primary";
     var pending = "text-primary";
     var completed = "text-primary";
+    var approved = "text-primary";
     var all = "text-primary";
 
     switch (status)
     {
-        case "inprocess":
-            inprocess = "active text-white";
+        case "processing":
+            processing = "active text-white";
             break;
 
         case "pending":
@@ -17,6 +18,10 @@
 
         case "completed":
             completed = "active text-white";
+            break;
+
+        case "approved":
+            approved = "active text-white";
             break;
 
         default:
@@ -32,11 +37,14 @@
         </div>
         <div class="p-2">
             <ul class="list-group list-group-horizontal-sm">
-                <a style="text-decoration:none;" asp-controller="Orders" asp-action="Index" asp-route-status="inprocess">
-                <li class="list-group-item @inprocess">In Process</li>
+                <a style="text-decoration:none;" asp-controller="Orders" asp-action="Index" asp-route-status="processing">
+                <li class="list-group-item @processing">Processing</li>
                 </a>
                 <a style="text-decoration:none;" asp-controller="Orders" asp-action="Index" asp-route-status="pending">
                 <li class="list-group-item @pending">Payment Pending</li>
+                </a>
+                <a style="text-decoration:none;" asp-controller="Orders" asp-action="Index" asp-route-status="approved">
+                <li class="list-group-item @approved">Approved</li>
                 </a>
                 <a style="text-decoration:none;" asp-controller="Orders" asp-action="Index" asp-route-status="completed">
                     <li class="list-group-item @completed">Completed</li>
