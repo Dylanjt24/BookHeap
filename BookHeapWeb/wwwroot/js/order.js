@@ -1,13 +1,25 @@
 ﻿var dataTable;
 
 $(document).ready(function () {
-    loadDataTable();
+    // Grab search parameters from url and check status
+    var url = window.location.search;
+    if (url.includes("processing"))
+        loadDataTable("processing");
+    else if (url.includes("pending"))
+        loadDataTable("pending");
+    else if (url.includes("completed"))
+        loadDataTable("completed");
+    else if (url.includes("approved"))
+        loadDataTable("approved");
+    else
+        loadDataTable("all");
 });
 
-function loadDataTable() {
+function loadDataTable(status) {
     dataTable = $('#dataTbl').DataTable({
         "ajax": {
-            "url": "/Admin/Orders/GetAll"
+            // Append the passed in status argument to the url search parameters
+            "url": "/Admin/Orders/GetAll?status=" + status
         },
         "columns": [
             { "data": "orderHeaderId", "width": "5%" },
