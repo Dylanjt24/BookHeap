@@ -1,5 +1,6 @@
 ﻿using BookHeap.DataAccess.Repository.IRepository;
 using BookHeap.Models;
+using BookHeap.Models.ViewModels;
 using BookHeap.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,8 @@ namespace BookHeapWeb.Areas.Admin.Controllers;
 public class OrdersController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
+    [BindProperty]
+    public OrderVM OrderVM { get; set; }
     public OrdersController(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
@@ -21,6 +24,16 @@ public class OrdersController : Controller
     public IActionResult Index()
     {
         return View();
+    }
+
+    public IActionResult Details(int orderId)
+    {
+        OrderVM = new()
+        {
+            OrderHeader = _unitOfWork.OrderHeaders.GetFirstOrDefault(o => o.OrderHeaderId == orderId, "ApplicationUser"),
+            OrderDetails = _unitOfWork.OrderDetails.GetAll(o => o.OrderId == orderId, "Product")
+        };
+        return View(OrderVM);
     }
 
     #region API CALLS
