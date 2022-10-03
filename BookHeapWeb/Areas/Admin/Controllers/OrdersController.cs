@@ -1,12 +1,15 @@
 ﻿using BookHeap.DataAccess.Repository.IRepository;
 using BookHeap.Models;
 using BookHeap.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace BookHeapWeb.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize]
 public class OrdersController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -24,8 +27,17 @@ public class OrdersController : Controller
     [HttpGet]
     public IActionResult GetAll(string status)
     {
-        // Get all OrderHeaders and include ApplicationUser
-        IEnumerable<OrderHeader> orderHeaders = _unitOfWork.OrderHeaders.GetAll(null, "ApplicationUser");
+        IEnumerable<OrderHeader> orderHeaders;
+        // Get all OrderHeaders and include ApplicationUser for getting email
+        if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
+            orderHeaders = _unitOfWork.OrderHeaders.GetAll(null, "ApplicationUser");
+        else
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            orderHeaders = _unitOfWork.OrderHeaders.GetAll(o => o.ApplicationUserId == claim.Value, "ApplicationUser");
+        }
+
 
         switch (status)
         {
