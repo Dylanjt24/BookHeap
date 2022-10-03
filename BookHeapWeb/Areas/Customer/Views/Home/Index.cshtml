@@ -7,18 +7,12 @@
             <div class="row p-2">
                 <div class="col-12 p-1" style="border: 1px solid #008cba; border-radius: 5px;">
                     <div class="card">
-                        <img src="@product.ImageUrl" class="card-img-top rounded" height="600" />
-                        <div class="card-body">
-                            <div class="ps-1">
-                                <p class="card-title h5 text-primary">@product.Title</p>
-                                <p class="card-title text-info">by @product.Author</p>
-                            </div>
-                            <div class="ps-1">
-                                <p>List Price: <s><b>$@product.ListPrice.ToString("0.00")</b></s></p>
-                            </div>
-                            <div class="ps-1">
-                                <p>As low as: <b>$@product.Price100.ToString("0.00")</b></p>
-                            </div>
+                        <img src="@product.ImageUrl" class="card-img-top" height="600" />
+                        <div class="card-body ps-3">
+                            <p class="card-title h5 text-primary">@product.Title</p>
+                            <p class="card-title text-info">by @product.Author</p>
+                            <p>List Price: <s><b>$@product.ListPrice.ToString("0.00")</b></s></p>
+                            <p>As low as: <b>$@product.Price100.ToString("0.00")</b></p>
                         </div>
                     </div>
                     <div>
