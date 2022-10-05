@@ -38,6 +38,7 @@ namespace BookHeap.DataAccess.Repository
             OrderHeader dbOrder = _db.OrderHeaders.FirstOrDefault(o => o.OrderHeaderId == id);
             if (dbOrder != null)
             {
+                dbOrder.PaymentDate = DateTime.Now;
                 dbOrder.SessionId = sessionId;
                 dbOrder.PaymentIntentId = paymentIntentId;
                 dbOrder.UpdatedAt = DateTime.Now;
