@@ -41,7 +41,8 @@ public class OrdersController : Controller
     public IActionResult GetAll(string status)
     {
         IEnumerable<OrderHeader> orderHeaders;
-        // Get all OrderHeaders and include ApplicationUser for getting email
+        // If logged in user is Admin or Employee, get all OrderHeaders and include ApplicationUser for getting email
+        // Else only get logged in user's orders
         if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
             orderHeaders = _unitOfWork.OrderHeaders.GetAll(null, "ApplicationUser");
         else
@@ -51,7 +52,7 @@ public class OrdersController : Controller
             orderHeaders = _unitOfWork.OrderHeaders.GetAll(o => o.ApplicationUserId == claim.Value, "ApplicationUser");
         }
 
-
+        // Filter orders based on selected status
         switch (status)
         {
             case "processing":

@@ -120,7 +120,8 @@ public class CartController : Controller
         }
 
         ApplicationUser applicationUser = _unitOfWork.ApplicationUsers.GetFirstOrDefault(u => u.Id == claim.Value);
-        // Check if user is a company user
+        // Check if user is not a company and require payment if not
+        // Else allow delayed payment if user is a company
         if (applicationUser.CompanyId.GetValueOrDefault() == 0)
         {
             ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
@@ -205,7 +206,7 @@ public class CartController : Controller
         {
             var service = new SessionService();
             Session session = service.Get(orderHeader.SessionId);
-            // Check Stripe payment status is approved
+            // Check if Stripe payment status is approved
             if(session.PaymentStatus.ToLower() == "paid")
             {
                 _unitOfWork.OrderHeaders.UpdateStatus(orderId, SD.StatusApproved, SD.PaymentStatusApproved);

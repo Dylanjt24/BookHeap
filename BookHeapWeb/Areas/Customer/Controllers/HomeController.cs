@@ -49,6 +49,9 @@ public class HomeController : Controller
         var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
         shoppingCart.ApplicationUserId = claim.Value;
 
+
+        // Grab cart from db based on ApplicationUserId and ProductId
+        // Create new ShoppingCart if none exists, else increase Count if it does
         ShoppingCart dbCart = _unitOfWork.ShoppingCarts.GetFirstOrDefault(
             c => c.ApplicationUserId == shoppingCart.ApplicationUserId && c.ProductId == shoppingCart.ProductId);
 
