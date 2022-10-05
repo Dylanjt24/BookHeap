@@ -29,7 +29,7 @@ function loadDataTable(status) {
             { "data": "orderStatus", "width": "15%" },
             { "data": "orderTotal", "width": "10%" },
             {
-                "data": "id",
+                "data": "orderHeaderId",
                 "render": function (data) {
                     return `
                         <div class="w-75 btn-group" role="group">
