@@ -33,7 +33,21 @@ public class OrdersController : Controller
             OrderHeader = _unitOfWork.OrderHeaders.GetFirstOrDefault(o => o.OrderHeaderId == orderId, "ApplicationUser"),
             OrderDetails = _unitOfWork.OrderDetails.GetAll(o => o.OrderId == orderId, "Product")
         };
+
+        if (OrderVM.OrderHeader == null)
+            return RedirectToAction("Index");
         return View(OrderVM);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Update()
+    {
+        // OrderVM coming from BindProperty at the top of controller
+        _unitOfWork.OrderHeaders.Update(OrderVM.OrderHeader);
+        _unitOfWork.Save();
+        TempData["Success"] = "Order details updated successfully";
+        return RedirectToAction("Details", "Orders", new { orderId = OrderVM.OrderHeader.OrderHeaderId });
     }
 
     #region API CALLS
