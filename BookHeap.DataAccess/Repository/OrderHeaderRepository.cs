@@ -18,7 +18,22 @@ namespace BookHeap.DataAccess.Repository
 
         public void Update(OrderHeader orderHeader)
         {
-            _db.OrderHeaders.Update(orderHeader);
+            OrderHeader dbOrderHeader = _db.OrderHeaders.FirstOrDefault(o => o.OrderHeaderId == orderHeader.OrderHeaderId);
+            if (dbOrderHeader != null)
+            {
+                dbOrderHeader.Name = orderHeader.Name;
+                dbOrderHeader.PhoneNumber = orderHeader.PhoneNumber;
+                dbOrderHeader.StreetAddress = orderHeader.StreetAddress;
+                dbOrderHeader.City = orderHeader.City;
+                dbOrderHeader.State = orderHeader.State;
+                dbOrderHeader.PostalCode = orderHeader.PostalCode;
+                dbOrderHeader.UpdatedAt = DateTime.Now;
+                if (orderHeader.Carrier != null)
+                    dbOrderHeader.Carrier = orderHeader.Carrier;
+                if (orderHeader.TrackingNumber != null)
+                    dbOrderHeader.TrackingNumber = orderHeader.TrackingNumber;
+            }
+
         }
 
         public void UpdateStatus(int id, string orderStatus, string? paymentStatus = null)
