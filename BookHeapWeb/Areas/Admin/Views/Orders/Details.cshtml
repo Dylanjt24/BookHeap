@@ -2,6 +2,7 @@
 @using BookHeap.Utilities
 
 <form method="post">
+    <input asp-for="OrderHeader.OrderHeaderId" hidden />
     <br />
     <div class="container">
         <div class="card">
@@ -189,7 +190,7 @@
                                     <input asp-for="OrderHeader.PaymentStatus" type="text" class="form-control" readonly />
                                 </div>
                             </div>
-                            <input type="submit" class="btn btn-warning form-control my-1" value="Update Order Details" />
+                            <input asp-action="Update" type="submit" class="btn btn-warning form-control my-1" value="Update Order Details" />
                         </div>
                         <div class="col-12 col-lg-5 offset-lg-1">
                             <h4 class="d-flex justify-content-between align-items-center mb-3">
