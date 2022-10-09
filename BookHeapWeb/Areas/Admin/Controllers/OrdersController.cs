@@ -50,6 +50,16 @@ public class OrdersController : Controller
         return RedirectToAction("Details", "Orders", new { orderId = OrderVM.OrderHeader.OrderHeaderId });
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult StartProcessing()
+    {
+        _unitOfWork.OrderHeaders.UpdateStatus(OrderVM.OrderHeader.OrderHeaderId, SD.StatusProcessing);
+        _unitOfWork.Save();
+        TempData["Success"] = "Order status updated successfully";
+        return RedirectToAction("Details", "Orders", new { orderId = OrderVM.OrderHeader.OrderHeaderId });
+    }
+
     #region API CALLS
     [HttpGet]
     public IActionResult GetAll(string status)
