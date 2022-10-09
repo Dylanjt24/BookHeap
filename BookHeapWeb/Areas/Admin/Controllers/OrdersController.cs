@@ -4,6 +4,7 @@ using BookHeap.Models.ViewModels;
 using BookHeap.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -40,6 +41,7 @@ public class OrdersController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
     [ValidateAntiForgeryToken]
     public IActionResult Update()
     {
@@ -51,6 +53,7 @@ public class OrdersController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
     [ValidateAntiForgeryToken]
     public IActionResult StartProcessing()
     {
@@ -61,6 +64,7 @@ public class OrdersController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
     [ValidateAntiForgeryToken]
     public IActionResult ShipOrder()
     {
@@ -69,9 +73,40 @@ public class OrdersController : Controller
         orderHeader.Carrier = OrderVM.OrderHeader.Carrier;
         orderHeader.OrderStatus = SD.StatusShipped;
         orderHeader.ShippingDate = DateTime.Now;
+        if (orderHeader.PaymentStatus == SD.PaymentStatusDelayedPayment)
+            orderHeader.PaymentDueDate = DateTime.Now.AddDays(30);
         _unitOfWork.OrderHeaders.Update(orderHeader);
         _unitOfWork.Save();
         TempData["Success"] = "Order shipped successfully";
+        return RedirectToAction("Details", "Orders", new { orderId = OrderVM.OrderHeader.OrderHeaderId });
+
+    }
+
+    [HttpPost]
+    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
+    [ValidateAntiForgeryToken]
+    public IActionResult CancelOrder()
+    {
+        OrderHeader orderHeader = _unitOfWork.OrderHeaders.GetFirstOrDefault(o => o.OrderHeaderId == OrderVM.OrderHeader.OrderHeaderId);
+        // Create Stripe refund if payment has already been received
+        if (orderHeader.PaymentStatus == SD.PaymentStatusApproved)
+        {
+            var options = new RefundCreateOptions
+            {
+                PaymentIntent = OrderVM.OrderHeader.PaymentIntentId,
+                Reason = RefundReasons.RequestedByCustomer
+            };
+            var service = new RefundService();
+            service.Create(options);
+            _unitOfWork.OrderHeaders.UpdateStatus(OrderVM.OrderHeader.OrderHeaderId, SD.StatusCancelled, SD.StatusRefunded);
+        }
+        // If payment hasn't been made yet, just cancel the order
+        else
+        {
+            _unitOfWork.OrderHeaders.UpdateStatus(OrderVM.OrderHeader.OrderHeaderId, SD.StatusCancelled, SD.StatusCancelled);
+        }
+        _unitOfWork.Save();
+        TempData["Success"] = "Order cancelled successfully";
         return RedirectToAction("Details", "Orders", new { orderId = OrderVM.OrderHeader.OrderHeaderId });
 
     }
