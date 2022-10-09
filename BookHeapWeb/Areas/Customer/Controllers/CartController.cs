@@ -33,7 +33,7 @@ public class CartController : Controller
             OrderHeader = new()
         };
         // Set price for each shopping cart in CartList and update TotalPrice
-        foreach(ShoppingCart cart in ShoppingCartVM.CartList)
+        foreach (ShoppingCart cart in ShoppingCartVM.CartList)
         {
             cart.Price = GetPriceFromQuantity(cart.Count, cart.Product.Price, cart.Product.Price50, cart.Product.Price100);
             ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
@@ -207,8 +207,10 @@ public class CartController : Controller
             var service = new SessionService();
             Session session = service.Get(orderHeader.SessionId);
             // Check if Stripe payment status is approved
-            if(session.PaymentStatus.ToLower() == "paid")
+            if (session.PaymentStatus.ToLower() == "paid")
             {
+                // Assign PaymentIntentId after payment has been made
+                _unitOfWork.OrderHeaders.UpdateStripePaymentId(orderId, orderHeader.SessionId, session.PaymentIntentId);
                 _unitOfWork.OrderHeaders.UpdateStatus(orderId, SD.StatusApproved, SD.PaymentStatusApproved);
                 _unitOfWork.Save();
             }
