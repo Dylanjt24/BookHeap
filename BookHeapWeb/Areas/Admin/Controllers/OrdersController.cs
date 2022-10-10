@@ -5,6 +5,7 @@ using BookHeap.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
+using Stripe.Checkout;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -35,9 +36,83 @@ public class OrdersController : Controller
             OrderDetails = _unitOfWork.OrderDetails.GetAll(o => o.OrderId == orderId, "Product")
         };
 
-        if (OrderVM.OrderHeader == null)
+        var claimsIdentity = (ClaimsIdentity)User.Identity;
+        var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+        // If order is null or the user isn't the one who placed the order and is not admin/employee
+        if (OrderVM.OrderHeader == null || (OrderVM.OrderHeader.ApplicationUserId != claim.Value && !(User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))))
             return RedirectToAction("Index");
         return View(OrderVM);
+    }
+
+    [ActionName("Details")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult PayNow()
+    {
+        OrderVM.OrderHeader = _unitOfWork.OrderHeaders.GetFirstOrDefault(o => o.OrderHeaderId == OrderVM.OrderHeader.OrderHeaderId, "ApplicationUser");
+        OrderVM.OrderDetails = _unitOfWork.OrderDetails.GetAll(o => o.OrderId == OrderVM.OrderHeader.OrderHeaderId, "Product");
+
+        // Stripe settings
+        var domain = "https://localhost:44316/";
+        var options = new SessionCreateOptions
+        {
+            LineItems = new List<SessionLineItemOptions>(),
+            Mode = "payment",
+            SuccessUrl = domain + $"Admin/Orders/PaymentConfirmation?orderHeaderId={OrderVM.OrderHeader.OrderHeaderId}",
+            CancelUrl = domain + $"Admin/Order/Details?orderId={OrderVM.OrderHeader.OrderHeaderId}",
+        };
+
+        // Create a LineItem for each product in CartList and add it to LineItems
+        foreach (OrderDetail detail in OrderVM.OrderDetails)
+        {
+            var sessionLineItem = new SessionLineItemOptions
+            {
+                PriceData = new SessionLineItemPriceDataOptions
+                {
+                    // Multiply by 100 to convert from dollars to cents
+                    UnitAmount = (long)(detail.Price * 100),
+                    Currency = "usd",
+                    ProductData = new SessionLineItemPriceDataProductDataOptions
+                    {
+                        Name = detail.Product.Title,
+                    },
+
+                },
+                Quantity = detail.Count,
+            };
+            options.LineItems.Add(sessionLineItem);
+        }
+
+        var service = new SessionService();
+        Session session = service.Create(options);
+        // Update OrderHeader properties with info from Stripe session
+        _unitOfWork.OrderHeaders.UpdateStripePaymentId(OrderVM.OrderHeader.OrderHeaderId, session.Id, session.PaymentIntentId);
+        _unitOfWork.Save();
+
+        Response.Headers.Add("Location", session.Url);
+        return new StatusCodeResult(303);
+    }
+
+    public IActionResult PaymentConfirmation(int orderHeaderId)
+    {
+        OrderHeader orderHeader = _unitOfWork.OrderHeaders.GetFirstOrDefault(o => o.OrderHeaderId == orderHeaderId);
+
+        // Check Stripe payment status if user not approved for delayed payment
+        if (orderHeader.PaymentStatus == SD.PaymentStatusDelayedPayment)
+        {
+            var service = new SessionService();
+            Session session = service.Get(orderHeader.SessionId);
+            // Check if Stripe payment status is approved
+            if (session.PaymentStatus.ToLower() == "paid")
+            {
+                // Assign PaymentIntentId after payment has been made
+                _unitOfWork.OrderHeaders.UpdateStripePaymentId(orderHeaderId, orderHeader.SessionId, session.PaymentIntentId);
+                _unitOfWork.OrderHeaders.UpdateStatus(orderHeaderId, orderHeader.OrderStatus, SD.PaymentStatusApproved);
+                _unitOfWork.Save();
+            }
+        }
+
+        return View(orderHeaderId);
     }
 
     [HttpPost]
