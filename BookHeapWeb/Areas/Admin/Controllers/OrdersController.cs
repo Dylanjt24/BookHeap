@@ -192,9 +192,9 @@ public class OrdersController : Controller
     {
         IEnumerable<OrderHeader> orderHeaders;
         // If logged in user is Admin or Employee, get all OrderHeaders and include ApplicationUser for getting email
-        // Else only get logged in user's orders
         if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
             orderHeaders = _unitOfWork.OrderHeaders.GetAll(null, "ApplicationUser");
+        // Else only get logged in user's orders
         else
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -206,11 +206,11 @@ public class OrdersController : Controller
         switch (status)
         {
             case "processing":
-                orderHeaders = orderHeaders.Where(o => o.PaymentStatus == SD.PaymentStatusDelayedPayment);
+                orderHeaders = orderHeaders.Where(o => o.OrderStatus == SD.StatusProcessing);
                 break;
 
             case "pending":
-                orderHeaders = orderHeaders.Where(o => o.OrderStatus == SD.StatusPending);
+                orderHeaders = orderHeaders.Where(o => o.PaymentStatus == SD.PaymentStatusDelayedPayment);
                 break;
 
             case "completed":
