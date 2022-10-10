@@ -1,12 +1,14 @@
 ﻿using BookHeap.DataAccess;
 using BookHeap.DataAccess.Repository.IRepository;
 using BookHeap.Models;
+using BookHeap.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace BookHeapWeb.Areas.Admin.Controllers;
 [Area("Admin")]
-
+[Authorize(Roles = SD.Role_Admin)]
 public class CoverTypesController : Controller
 {
     private readonly IUnitOfWork _db;

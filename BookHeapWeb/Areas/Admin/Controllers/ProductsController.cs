@@ -2,13 +2,15 @@
 using BookHeap.DataAccess.Repository.IRepository;
 using BookHeap.Models;
 using BookHeap.Models.ViewModels;
+using BookHeap.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
 
 namespace BookHeapWeb.Areas.Admin.Controllers;
 [Area("Admin")]
-
+[Authorize(Roles = SD.Role_Admin)]
 public class ProductsController : Controller
 {
     private readonly IUnitOfWork _db;

@@ -1,12 +1,14 @@
 ﻿using BookHeap.DataAccess.Repository.IRepository;
 using BookHeap.Models;
+using BookHeap.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 
 namespace BookHeapWeb.Areas.Admin.Controllers;
 [Area("Admin")]
-
+[Authorize(Roles = SD.Role_Admin)]
 public class CompaniesController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -34,7 +36,7 @@ public class CompaniesController : Controller
     }
 
     [HttpPost]
-    public IActionResult Upsert (Company updatedCompany)
+    public IActionResult Upsert(Company updatedCompany)
     {
         if (ModelState.IsValid)
         {
