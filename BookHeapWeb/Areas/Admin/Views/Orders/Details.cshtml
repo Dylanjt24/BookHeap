@@ -224,6 +224,10 @@
                                     </div>
                                 </li>
                             </ul>
+                            @if (Model.OrderHeader.PaymentStatus == SD.PaymentStatusDelayedPayment && Model.OrderHeader.OrderStatus == SD.StatusShipped)
+                            {
+                            <input type="submit" class="btn btn-success form-control my-1" value="Pay Now" />
+                            }
                             @if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
                             {
                                 if (Model.OrderHeader.OrderStatus == SD.StatusApproved)
@@ -234,19 +238,10 @@
                                 {
                                     <input asp-action="ShipOrder" onclick="return ValidateInput()" type="submit" class="btn btn-primary form-control my-1" value="Ship Order" />
                                 }
-                                if (Model.OrderHeader.PaymentStatus == SD.PaymentStatusDelayedPayment && Model.OrderHeader.OrderStatus == SD.StatusShipped)
-                                {
-                                    <input type="submit" class="btn btn-success form-control my-1" value="Pay Now" />
-                                }
                                 if (Model.OrderHeader.OrderStatus != SD.StatusRefunded && Model.OrderHeader.OrderStatus != SD.StatusCancelled && Model.OrderHeader.OrderStatus != SD.StatusShipped)
                                 {
                                     <input asp-action="CancelOrder" type="submit" class="btn btn-danger form-control my-1" value="Cancel Order" />
                                 }
-                            }
-
-                            @if (User.IsInRole(SD.Role_User_Comp) && Model.OrderHeader.OrderStatus == SD.StatusShipped && Model.OrderHeader.PaymentStatus != SD.PaymentStatusApproved)
-                            {
-                                <input type="submit" class="btn btn-success form-control my-1" value="Pay Now" />
                             }
                         </div>
                     </div>
