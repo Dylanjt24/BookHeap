@@ -244,6 +244,10 @@
                                 }
                             }
 
+                            @if (User.IsInRole(SD.Role_User_Comp) && Model.OrderHeader.OrderStatus == SD.StatusShipped && Model.OrderHeader.PaymentStatus != SD.PaymentStatusApproved)
+                            {
+                                <input type="submit" class="btn btn-success form-control my-1" value="Pay Now" />
+                            }
                         </div>
                     </div>
                 </div>
