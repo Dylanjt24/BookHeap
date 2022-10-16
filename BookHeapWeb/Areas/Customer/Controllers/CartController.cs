@@ -3,6 +3,7 @@ using BookHeap.Models;
 using BookHeap.Models.ViewModels;
 using BookHeap.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Stripe.Checkout;
 using System.Security.Claims;
@@ -14,11 +15,13 @@ namespace BookHeapWeb.Areas.Customer.Controllers;
 public class CartController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IEmailSender _emailSender;
     [BindProperty]
     public ShoppingCartVM ShoppingCartVM { get; set; }
-    public CartController(IUnitOfWork unitOfWork)
+    public CartController(IUnitOfWork unitOfWork, IEmailSender emailSender)
     {
         _unitOfWork = unitOfWork;
+        _emailSender = emailSender;
     }
 
     public IActionResult Index()
@@ -199,7 +202,7 @@ public class CartController : Controller
 
     public IActionResult OrderConfirmation(int orderId)
     {
-        OrderHeader orderHeader = _unitOfWork.OrderHeaders.GetFirstOrDefault(o => o.OrderHeaderId == orderId);
+        OrderHeader orderHeader = _unitOfWork.OrderHeaders.GetFirstOrDefault(o => o.OrderHeaderId == orderId, "ApplicationUser");
 
         // Check Stripe payment status if user not approved for delayed payment
         if (orderHeader.PaymentStatus != SD.PaymentStatusDelayedPayment)
@@ -215,6 +218,7 @@ public class CartController : Controller
                 _unitOfWork.Save();
             }
         }
+        _emailSender.SendEmailAsync(orderHeader.ApplicationUser.Email, "New Order - Book Heap", $"<p>Your order has been created successfully!</p> <p>Order number is: {orderHeader.OrderHeaderId}");
         // Clear shopping cart
         List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCarts.GetAll(c => c.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
         _unitOfWork.ShoppingCarts.RemoveRange(shoppingCarts);
