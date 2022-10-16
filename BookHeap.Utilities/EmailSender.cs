@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using MimeKit;
+using MimeKit.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +14,22 @@ public class EmailSender : IEmailSender
 {
     public Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
+        // Create email message
+        var message = new MimeMessage();
+        message.From.Add(MailboxAddress.Parse("welcome@bookheap.com"));
+        message.To.Add(MailboxAddress.Parse(email));
+        message.Subject = subject;
+        message.Body = new TextPart(TextFormat.Html) { Text = htmlMessage };
+
+        // Send email
+        using (var emailClient = new SmtpClient())
+        {
+            emailClient.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+            emailClient.Authenticate("email", "password");
+            emailClient.Send(message);
+            emailClient.Disconnect(true);
+        }
+
         return Task.CompletedTask;
     }
 }
