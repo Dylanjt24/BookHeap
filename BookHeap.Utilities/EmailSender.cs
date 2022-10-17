@@ -1,5 +1,6 @@
 ﻿using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
 using MimeKit.Text;
 using System;
@@ -12,6 +13,13 @@ namespace BookHeap.Utilities;
 
 public class EmailSender : IEmailSender
 {
+    private readonly IConfiguration _configuration;
+
+    public EmailSender(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
     public Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
         // Create email message
@@ -25,7 +33,7 @@ public class EmailSender : IEmailSender
         using (var emailClient = new SmtpClient())
         {
             emailClient.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            emailClient.Authenticate("email", "password");
+            emailClient.Authenticate(_configuration["Email:Username"], _configuration["Email:Password"]);
             emailClient.Send(message);
             emailClient.Disconnect(true);
         }
