@@ -13,6 +13,7 @@ namespace BookHeap.Utilities;
 
 public class EmailSender : IEmailSender
 {
+    // Used for getting values from user secrets
     private readonly IConfiguration _configuration;
 
     public EmailSender(IConfiguration configuration)
