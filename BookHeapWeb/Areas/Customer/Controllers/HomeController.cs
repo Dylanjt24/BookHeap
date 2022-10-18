@@ -1,5 +1,6 @@
 ﻿using BookHeap.DataAccess.Repository.IRepository;
 using BookHeap.Models;
+using BookHeap.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -59,8 +60,8 @@ public class HomeController : Controller
             _unitOfWork.ShoppingCarts.Add(shoppingCart);
         else
             _unitOfWork.ShoppingCarts.IncrementCount(dbCart, shoppingCart.Count);
-
         _unitOfWork.Save();
+        HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCarts.GetAll(c => c.ApplicationUserId == claim.Value).ToList().Count);
         return RedirectToAction("Index");
     }
 
