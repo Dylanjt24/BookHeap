@@ -223,6 +223,7 @@ public class CartController : Controller
             }
         }
         _emailSender.SendEmailAsync(orderHeader.ApplicationUser.Email, "New Order - Book Heap", $"<p>Your order has been created successfully!</p> <p>Order number is: {orderHeader.OrderHeaderId}");
+        HttpContext.Session.Clear();
         // Clear shopping cart
         List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCarts.GetAll(c => c.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
         _unitOfWork.ShoppingCarts.RemoveRange(shoppingCarts);
