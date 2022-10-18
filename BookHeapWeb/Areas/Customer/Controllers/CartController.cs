@@ -61,7 +61,10 @@ public class CartController : Controller
         ShoppingCart dbCart = _unitOfWork.ShoppingCarts.GetFirstOrDefault(c => c.ShoppingCartId == cartId);
         // Delete cart if Count will reach 0
         if (dbCart.Count <= 1)
+        {
             _unitOfWork.ShoppingCarts.Remove(dbCart);
+            HttpContext.Session.SetInt32(SD.SessionCart, (int)HttpContext.Session.GetInt32(SD.SessionCart) - 1);
+        }
         else
             _unitOfWork.ShoppingCarts.DecrementCount(dbCart, 1);
         _unitOfWork.Save();
@@ -73,6 +76,7 @@ public class CartController : Controller
         ShoppingCart dbCart = _unitOfWork.ShoppingCarts.GetFirstOrDefault(c => c.ShoppingCartId == cartId);
         _unitOfWork.ShoppingCarts.Remove(dbCart);
         _unitOfWork.Save();
+        HttpContext.Session.SetInt32(SD.SessionCart, (int)HttpContext.Session.GetInt32(SD.SessionCart) - 1);
         return RedirectToAction("Index");
     }
 
