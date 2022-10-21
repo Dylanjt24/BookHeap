@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookHeap.Models\BookHeap.Models.csproj" />
+    <ProjectReference Include="..\BookHeap.Utilities\BookHeap.Utilities.csproj" />
   </ItemGroup>
 
 </Project>
